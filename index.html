@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d5c">
+<title>Minhas Comissões — Planeta Água</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<style>
+/* ===================================================================
+   SENHA DO SITE: procure a linha  const SENHA = ...  lá embaixo.
+   =================================================================== */
+
+/* ---------- tema claro (padrão) ---------- */
+:root{
+  --bg:#eef3f7; --bg2:#e3ebf2; --card:#fff; --card2:#f7fafc;
+  --ink:#0e1c27; --muted:#66798a; --line:#e2e9f0;
+  --azul:#0f3d5c; --azulClaro:#1a6f9e; --verde:#0f9d8b; --verdeEsc:#1e7b34;
+  --ambar:#b7791f; --vermelho:#c0392b; --roxo:#6b4fa0;
+  --grade:#dde5ec; --eixo:#8798a6; --tagbg:#eef3f7;
+  --shadow:0 1px 2px rgba(16,40,60,.05), 0 6px 18px rgba(16,40,60,.07);
+  --hdA:#0f3d5c; --hdB:#17618c;
+  --c1:#2f80c8; --c2:#b5800e; --c3:#12a08d; --c4:#8a63cf; --c5:#d4574a; --c6:#6b7c8c;
+}
+/* ---------- tema escuro ---------- */
+html[data-tema="escuro"]{
+  --bg:#0c151d; --bg2:#101c26; --card:#152431; --card2:#1b2c3a;
+  --ink:#e7eef4; --muted:#8ea3b4; --line:#22333f;
+  --azul:#63b3e4; --azulClaro:#8ecbf0; --verde:#2bbfa9; --verdeEsc:#3fc06a;
+  --ambar:#e0a341; --vermelho:#ef6f5e; --roxo:#a78bde;
+  --grade:#25384a; --eixo:#7d93a5; --tagbg:#1d2f3d;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+  --hdA:#10222f; --hdB:#173a52;
+  --c1:#5aa9e6; --c2:#d9a53a; --c3:#33bda8; --c4:#a98ce0; --c5:#e97f70; --c6:#8b9dab;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;transition:background .35s ease,color .35s ease}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(900px 420px at 50% -140px, rgba(26,111,158,.15), transparent 70%)}
+
+/* ---------- cabeçalho ---------- */
+.topo{background:linear-gradient(135deg,var(--hdA),var(--hdB));color:#fff;
+  padding:22px 18px 20px;position:relative;overflow:hidden}
+.topo::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;
+  background:rgba(255,255,255,.06);top:-120px;right:-70px}
+.topo .dentro{max-width:1080px;margin:0 auto;position:relative;z-index:1;
+  display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.topo h1{margin:0;font-size:21px;font-weight:800;letter-spacing:-.2px}
+.topo p{margin:5px 0 0;font-size:12.5px;opacity:.85}
+.acoes{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.bt{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.14);color:#fff;
+  border-radius:11px;padding:9px 13px;font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .18s ease,transform .12s ease;white-space:nowrap}
+.bt:hover{background:rgba(255,255,255,.24)}
+.bt:active{transform:scale(.97)}
+
+/* ---------- abas ---------- */
+.abas{max-width:1080px;margin:0 auto;padding:14px 18px 0;display:flex;gap:8px;flex-wrap:wrap}
+.aba{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;
+  padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s ease}
+.aba:hover{color:var(--ink)}
+.aba.on{background:var(--azul);border-color:var(--azul);color:#fff;box-shadow:var(--shadow)}
+html[data-tema="escuro"] .aba.on{color:#08131c}
+
+/* ---------- conteúdo ---------- */
+.corpo{max-width:1080px;margin:0 auto;padding:16px 18px 46px}
+.cx{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+.cx h2{margin:0 0 3px;font-size:15px;font-weight:800}
+.cx .sub{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
+
+.hero{background:linear-gradient(135deg,var(--verde),var(--azulClaro));color:#fff;border:0;
+  text-align:center;padding:26px 18px}
+.hero .rot{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;opacity:.9;font-weight:700}
+.hero .val{font-size:clamp(36px,10vw,52px);font-weight:800;margin:6px 0 2px;letter-spacing:-1px}
+.hero .per{font-size:13px;opacity:.9}
+
+.grade{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));margin-bottom:14px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;
+  box-shadow:var(--shadow)}
+.mini .r{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.mini .v{font-size:23px;font-weight:800;margin-top:5px}
+.mini .n{font-size:11.5px;color:var(--muted);margin-top:3px}
+.v-verde{color:var(--verdeEsc)} .v-ambar{color:var(--ambar)} .v-azul{color:var(--azulClaro)}
+
+/* ---------- tabela ---------- */
+.rolagem{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);
+  border-bottom:2px solid var(--line);padding:9px 10px;white-space:nowrap;font-weight:800}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:var(--card2)}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.forte{font-weight:700}
+.tag{display:inline-block;padding:2.5px 9px;border-radius:999px;font-size:11.5px;font-weight:700;
+  background:var(--tagbg);color:var(--muted);white-space:nowrap}
+.tag.pend{background:rgba(183,121,31,.14);color:var(--ambar)}
+.tag.pago{background:rgba(30,123,52,.13);color:var(--verdeEsc)}
+tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
+
+/* ---------- gráfico ---------- */
+.gr{width:100%;height:auto;display:block;overflow:visible;margin:0 auto}
+@media(max-width:620px){.gr{min-width:470px}}   /* no celular o gráfico rola de lado em vez de encolher */
+.gr text{font-size:10.5px;fill:var(--eixo)}
+.gr .rotv{font-size:10.5px;font-weight:700;fill:var(--ink)}
+.gr .lin{stroke:var(--grade);stroke-width:1}
+.barra{transition:opacity .18s ease}
+.barra:hover{opacity:.78}
+
+/* ---------- listas simples ---------- */
+.linhas{display:flex;flex-direction:column;gap:9px}
+.li{display:flex;align-items:center;gap:11px}
+.li .nome{font-size:13.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .qt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.li .vl{font-size:13.5px;font-weight:800;white-space:nowrap;min-width:78px;text-align:right}
+.li .trilho{height:7px;border-radius:999px;background:var(--grade);flex:1.4;overflow:hidden;min-width:60px}
+.li .trilho i{display:block;height:100%;border-radius:999px}
+
+.vazio{text-align:center;color:var(--muted);font-size:13.5px;padding:26px 10px;line-height:1.6}
+.rodape{max-width:1080px;margin:0 auto;padding:0 18px 40px;font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ---------- carregando ---------- */
+#carregando{max-width:1080px;margin:0 auto;padding:40px 18px;text-align:center;color:var(--muted);font-size:14px}
+#carregando button{margin-top:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:11px;padding:11px 17px;font-size:14px;font-weight:700;cursor:pointer}
+
+/* ---------- senha ---------- */
+#gate{position:fixed;inset:0;background:linear-gradient(160deg,#0b2d45,#12628c 55%,#0f9d8b);
+  z-index:99;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+#gate::before,#gate::after{content:'';position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.08);animation:flutua 9s ease-in-out infinite}
+#gate::before{width:300px;height:300px;top:-90px;left:-90px}
+#gate::after{width:220px;height:220px;bottom:-70px;right:-60px;animation-delay:-4.5s}
+@keyframes flutua{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(22px) scale(1.07)}}
+#gate .box{width:100%;max-width:310px;text-align:center;color:#fff;position:relative;animation:surge .6s cubic-bezier(.22,.8,.3,1)}
+#gate .logo{font-size:50px;animation:pinga 2.8s ease-in-out infinite}
+@keyframes pinga{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+#gate h2{font-size:18px;margin:10px 0 24px;font-weight:700;line-height:1.4}
+#gate input{width:100%;padding:15px;font-size:16px;border:1px solid rgba(255,255,255,.25);
+  border-radius:14px;text-align:center;background:rgba(255,255,255,.14);color:#fff}
+#gate input:focus{outline:0;border-color:rgba(255,255,255,.6)}
+#gate input::placeholder{color:rgba(255,255,255,.55)}
+#gate button{width:100%;margin-top:11px;padding:15px;font-size:15px;font-weight:700;border:0;
+  border-radius:14px;background:#fff;color:#0b2d45;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#gate button:active{transform:scale(.97)}
+#gate .err{font-size:12.5px;color:#ffd0c9;margin-top:12px;min-height:16px}
+#gate.sai{animation:some .45s ease forwards}
+@keyframes some{to{opacity:0;transform:scale(1.04)}}
+@keyframes surge{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.anim{animation:surge .45s cubic-bezier(.22,.8,.3,1) backwards;animation-delay:calc(var(--i,0)*45ms)}
+@media(prefers-reduced-motion:reduce){.anim{animation:none}}
+
+/* ---------- aviso flutuante ---------- */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);
+  background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;
+  font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;z-index:80;max-width:88vw;text-align:center}
+#toast.ver{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- celular ---------- */
+@media(max-width:620px){
+  .topo{padding:18px 14px 16px}
+  .topo h1{font-size:18px}
+  .acoes{margin-left:0;width:100%}
+  .bt{flex:1;text-align:center;padding:10px 8px;font-size:12.5px}
+  .abas,.corpo,.rodape{padding-left:14px;padding-right:14px}
+  .cx{padding:15px;border-radius:14px}
+  .aba{flex:1;text-align:center;padding:10px 8px;font-size:13px}
+  table{font-size:12.5px;min-width:470px}
+  th,td{padding:8px 7px}
+}
+
+/* ---------- impressão / PDF ---------- */
+.soimpressao{display:none}
+@media print{
+  @page{size:A4 portrait;margin:13mm 12mm}
+  html,body{background:#fff !important;color:#000 !important}
+  body::before{display:none}
+  .topo,.abas,.acoes,.rodape,#gate,#toast,.naoimprime{display:none !important}
+  .soimpressao{display:block}
+  .corpo{padding:0;max-width:none}
+  /* sem animação na impressão — senão os cartões saem apagados ou em branco */
+  .anim{animation:none !important;opacity:1 !important;transform:none !important}
+  .cx{border:1px solid #ccc;box-shadow:none;page-break-inside:avoid;margin-bottom:10px;padding:12px}
+  .cx.longo{page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-row-group}   /* não repetir o total em toda página */
+  tr{page-break-inside:avoid}
+  .hero{background:none !important;color:#000 !important;border:2px solid #000;padding:16px}
+  .hero .val{color:#000}
+  .mini{border:1px solid #ccc;box-shadow:none}
+  .v-verde,.v-ambar,.v-azul{color:#000 !important}
+  .rolagem{overflow:visible}
+  table{min-width:0;font-size:10.5pt}
+  th{color:#000;border-bottom:1.5px solid #000}
+  td{border-bottom:1px solid #ddd}
+  tbody tr:nth-child(even){background:#f3f3f3 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tag{border:1px solid #999;background:none !important;color:#000 !important}
+  .gr text{fill:#000}
+  .impr-cab{border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}
+  .impr-cab h1{margin:0;font-size:16pt}
+  .impr-cab p{margin:3px 0 0;font-size:9.5pt;color:#444}
+  .tab:not(.on){display:none !important}
+}
+.tab:not(.on){display:none}
+</style>
+</head>
+<body>
+
+<!-- ============ senha ============ -->
+<div id="gate">
+  <div class="box">
+    <div class="logo">💰</div>
+    <h2>Minhas Comissões<br>Planeta Água</h2>
+    <input id="pw" type="password" placeholder="senha" autocomplete="current-password">
+    <button id="entrar">Entrar</button>
+    <div class="err" id="gerr"></div>
+  </div>
+</div>
+
+<!-- ============ cabeçalho ============ -->
+<header class="topo">
+  <div class="dentro">
+    <div>
+      <h1>Minhas Comissões</h1>
+      <p id="subtopo">carregando a planilha…</p>
+    </div>
+    <div class="acoes">
+      <button class="bt" id="btPdf">📄 Salvar PDF</button>
+      <button class="bt" id="btCopiar">📋 Copiar para o Histórico</button>
+      <button class="bt" id="btTema">🌙</button>
+    </div>
+  </div>
+</header>
+
+<nav class="abas" id="abas" hidden>
+  <button class="aba on" data-tab="quinzena">Quinzena atual</button>
+  <button class="aba" data-tab="historico">Histórico</button>
+</nav>
+
+<div id="carregando">carregando a planilha…</div>
+
+<main class="corpo" id="app" hidden>
+  <!-- cabeçalho que só aparece no PDF -->
+  <div class="soimpressao impr-cab">
+    <h1>Minhas Comissões — Planeta Água</h1>
+    <p id="imprSub"></p>
+  </div>
+
+  <section class="tab on" id="tab-quinzena"></section>
+  <section class="tab" id="tab-historico"></section>
+</main>
+
+<div class="rodape" id="rodape"></div>
+<div id="toast"></div>
+
+<!-- leitor de planilha (SheetJS) — fica na própria pasta, o site não depende de internet -->
+<script src="sheetjs.js"></script>
+<script>
+/* ===================================================================
+   SENHA DO SITE — troque o texto entre aspas e salve o arquivo.
+   =================================================================== */
+const SENHA = "comissao2026";
+
+/* nome da planilha que fica nesta mesma pasta */
+const ARQUIVO = "2026.xlsx";
+
+const $ = id => document.getElementById(id);
+const RS = v => 'R$ ' + (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const dia = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '';
+const diaAno = d => d ? d.toLocaleDateString('pt-BR') : '';
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('ver');
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('ver'),3200);
+}
+
+/* ---------------- tema ---------------- */
+function tema(t){
+  document.documentElement.setAttribute('data-tema',t);
+  $('btTema').textContent = t==='escuro' ? '☀️' : '🌙';
+  try{ localStorage.setItem('cm_tema',t); }catch(e){}
+}
+(function(){
+  let t=null; try{ t=localStorage.getItem('cm_tema'); }catch(e){}
+  if(!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro';
+  document.documentElement.setAttribute('data-tema',t);
+})();
+
+/* ---------------- datas vindas do xlsx ---------------- */
+function pData(v){
+  if(v==null||v==='') return null;
+  if(Object.prototype.toString.call(v)==='[object Date]') return isNaN(v)?null:new Date(v.getFullYear(),v.getMonth(),v.getDate());
+  if(typeof v==='number'){ const d=XLSX.SSF.parse_date_code(v); return d?new Date(d.y,d.m-1,d.d):null; }
+  const m=String(v).match(/(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})/);
+  if(m){ let a=+m[3]; if(a<100)a+=2000; return new Date(a,+m[2]-1,+m[1]); }
+  const d=new Date(v); return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+function pNum(v){
+  if(typeof v==='number') return v;
+  if(v==null||v==='') return 0;
+  const n=parseFloat(String(v).replace(/[^\d,.-]/g,'').replace(/\.(?=\d{3}\b)/g,'').replace(',','.'));
+  return isNaN(n)?0:n;
+}
+
+/* pago x pendente, pela forma de pagamento do CLIENTE */
+const pendente = fp => /aguard|pendent|fiado|receber/i.test(fp||'');
+
+/* tipo de serviço a partir da observação */
+function tipoServico(obs){
+  const o=(obs||'').toLowerCase();
+  if(/instala/.test(o)) return 'Instalação';
+  if(/limpeza/.test(o)) return 'Limpeza';
+  if(/bot[aã]o|bot[oõ]es|pe[cç]a|torneira|mangueira|registro|reparo|conserto|troca de/.test(o)) return 'Peça / reparo';
+  if(/refil|filtro|vela/.test(o)) return 'Refil';
+  return obs ? obs.trim() : 'Outros';
+}
+
+/* qual quinzena a data cai — usado para rotular o histórico */
+function rotuloQuinzena(d){
+  if(!d) return '';
+  const q = d.getDate()<=15 ? '1ª' : '2ª';
+  return `${q} quinzena de ${MES[d.getMonth()]}/${d.getFullYear()}`;
+}
+
+/* ---------------- leitura da planilha ---------------- */
+let WB=null, ATUAL=[], HIST=[];
+
+async function carregar(){
+  try{
+    const r = await fetch(ARQUIVO+'?t='+Date.now(), {cache:'no-store'});
+    if(!r.ok) throw new Error(r.status);
+    processar(new Uint8Array(await r.arrayBuffer()));
+  }catch(e){
+    $('carregando').innerHTML =
+      'Não consegui abrir a planilha sozinho.<br>'+
+      '<span style="font-size:12.5px">Isso acontece quando o site é aberto direto do arquivo, sem servidor. '+
+      'Publicado no GitHub ele carrega automático.</span><br>'+
+      '<button id="escolher">Escolher a planilha no aparelho</button>'+
+      '<input type="file" id="fpick" accept=".xlsx" hidden>';
+    $('escolher').onclick=()=>$('fpick').click();
+    $('fpick').onchange=ev=>{
+      const f=ev.target.files[0]; if(!f) return;
+      $('carregando').textContent='lendo a planilha…';
+      const fr=new FileReader();
+      fr.onload=()=>processar(new Uint8Array(fr.result));
+      fr.readAsArrayBuffer(f);
+    };
+  }
+}
+
+function grade(nome){
+  const ws = WB.Sheets[nome];
+  if(!ws) return [];
+  return XLSX.utils.sheet_to_json(ws,{header:1,defval:null,blankrows:true});
+}
+
+function processar(buf){
+  WB = XLSX.read(buf,{type:'array',cellDates:true});
+
+  /* --- aba Totais: cabeçalho na linha 5, dados da linha 6 em diante --- */
+  ATUAL = [];
+  const t = grade('Totais');
+  for(let i=5;i<t.length;i++){
+    const L=t[i]||[]; const d=pData(L[0]); const v=pNum(L[2]);
+    if(!d || !v) continue;                       /* pula vazias e as notas do rodapé */
+    ATUAL.push({d, cliente:String(L[1]||'').trim(), valor:v,
+                obs:String(L[3]||'').trim(), fp:String(L[4]||'').trim()});
+  }
+  ATUAL.sort((a,b)=>a.d-b.d);
+
+  /* --- aba Histórico: cabeçalho na linha 1, dados da linha 2 --- */
+  HIST = [];
+  const h = grade('Histórico');
+  for(let i=1;i<h.length;i++){
+    const L=h[i]||[]; const d=pData(L[0]); const v=pNum(L[2]);
+    if(!d || !v) continue;
+    HIST.push({d, cliente:String(L[1]||'').trim(), valor:v,
+               obs:String(L[3]||'').trim(), fp:String(L[4]||'').trim(),
+               quinzena:String(L[5]||'').trim() || rotuloQuinzena(d),
+               recebido:pData(L[6])});
+  }
+  HIST.sort((a,b)=>a.d-b.d);
+
+  $('carregando').hidden=true;
+  $('app').hidden=false;
+  $('abas').hidden=false;
+  desenhar();
+}
+
+/* ---------------- gráfico de barras (SVG puro) ---------------- */
+function barras(itens,{cor='var(--c1)',altura=170}={}){
+  if(!itens.length) return '<div class="vazio">nada para mostrar ainda</div>';
+  const L=54, R=10, T=14, B=30, larg=Math.max(560, itens.length*62), alt=altura;
+  const max=Math.max(...itens.map(i=>i.v),1);
+  const escala=v => (alt-T-B) * (v/max);
+  const passo=(larg-L-R)/itens.length, bl=Math.min(38,passo*.62);
+  let g='';
+  for(let k=0;k<=3;k++){
+    const y=T+(alt-T-B)*k/3, vl=max*(1-k/3);
+    g+=`<line class="lin" x1="${L}" y1="${y.toFixed(1)}" x2="${larg-R}" y2="${y.toFixed(1)}"/>`+
+       `<text x="${L-7}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${Math.round(vl)}</text>`;
+  }
+  itens.forEach((it,i)=>{
+    const h=escala(it.v), x=L+passo*i+(passo-bl)/2, y=alt-B-h;
+    g+=`<rect class="barra" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bl.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="4" style="fill:${cor}"><title>${esc(it.r)}: ${RS(it.v)}</title></rect>`;
+    if(it.v) g+=`<text class="rotv" x="${(x+bl/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle">${Math.round(it.v)}</text>`;
+    g+=`<text x="${(x+bl/2).toFixed(1)}" y="${alt-B+15}" text-anchor="middle">${esc(it.r)}</text>`;
+  });
+  return `<div class="rolagem"><svg class="gr" style="max-width:${larg}px" viewBox="0 0 ${larg} ${alt}" role="img">${g}</svg></div>`;
+}
+
+/* ---------------- barra proporcional (listas) ---------------- */
+function listaBarras(itens){
+  if(!itens.length) return '<div class="vazio">nada para mostrar ainda</div>';
+  const max=Math.max(...itens.map(i=>i.v),1);
+  const cores=['var(--c1)','var(--c3)','var(--c2)','var(--c4)','var(--c5)','var(--c6)'];
+  return '<div class="linhas">'+itens.map((it,i)=>`
+    <div class="li anim" style="--i:${i}">
+      <span class="nome">${esc(it.r)}</span>
+      <span class="qt">${it.n} ${it.n===1?'serviço':'serviços'}</span>
+      <span class="trilho"><i style="width:${(it.v/max*100).toFixed(1)}%;background:${cores[i%cores.length]}"></i></span>
+      <span class="vl">${RS(it.v)}</span>
+    </div>`).join('')+'</div>';
+}
+
+/* ---------------- agrupar ---------------- */
+function agrupar(arr, chave){
+  const m=new Map();
+  arr.forEach(x=>{
+    const k=chave(x);
+    const o=m.get(k)||{r:k,v:0,n:0};
+    o.v+=x.valor; o.n++; m.set(k,o);
+  });
+  return [...m.values()];
+}
+
+/* ---------------- tabela de lançamentos ---------------- */
+function tabela(arr,{comQuinzena=false}={}){
+  if(!arr.length) return '<div class="vazio">nenhum lançamento</div>';
+  const tot=arr.reduce((s,x)=>s+x.valor,0);
+  return `<div class="rolagem"><table>
+    <thead><tr>
+      <th>Data</th><th>Cliente</th><th>Serviço</th>
+      ${comQuinzena?'<th>Quinzena</th>':''}
+      <th>Pagamento do cliente</th><th class="num">Minha comissão</th>
+    </tr></thead>
+    <tbody>${arr.map(x=>`<tr>
+      <td class="num" style="text-align:left">${diaAno(x.d)}</td>
+      <td>${esc(x.cliente)}</td>
+      <td>${esc(x.obs||'—')}</td>
+      ${comQuinzena?`<td>${esc(x.quinzena||'')}</td>`:''}
+      <td><span class="tag ${pendente(x.fp)?'pend':'pago'}">${esc(x.fp||'—')}</span></td>
+      <td class="num forte">${RS(x.valor)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td colspan="${comQuinzena?5:4}">${arr.length} ${arr.length===1?'serviço':'serviços'}</td>
+      <td class="num">${RS(tot)}</td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+/* =================== TELA 1 — QUINZENA ATUAL =================== */
+function telaQuinzena(){
+  const el=$('tab-quinzena');
+  if(!ATUAL.length){
+    el.innerHTML=`<div class="cx"><div class="vazio">
+      A aba <b>Totais</b> da planilha está vazia.<br>
+      Ou a quinzena acabou de ser fechada, ou ainda não houve serviço neste período.
+    </div></div>`;
+    $('subtopo').textContent='nenhum serviço lançado na quinzena atual';
+    return;
+  }
+  const total=ATUAL.reduce((s,x)=>s+x.valor,0);
+  const pagos=ATUAL.filter(x=>!pendente(x.fp)).reduce((s,x)=>s+x.valor,0);
+  const pend=total-pagos;
+  const de=ATUAL[0].d, ate=ATUAL[ATUAL.length-1].d;
+  const periodo=`${diaAno(de)} a ${diaAno(ate)}`;
+
+  $('subtopo').textContent=`quinzena atual · ${periodo}`;
+  $('imprSub').textContent=`Quinzena de ${periodo} · emitido em ${new Date().toLocaleDateString('pt-BR')}`;
+
+  const porDia=agrupar(ATUAL,x=>dia(x.d)).sort((a,b)=>{
+    const [da,ma]=a.r.split('/'), [db,mb]=b.r.split('/');
+    return (ma-mb)||(da-db);
+  });
+  const porTipo=agrupar(ATUAL,x=>tipoServico(x.obs)).sort((a,b)=>b.v-a.v);
+  const porCliente=agrupar(ATUAL,x=>x.cliente||'—').sort((a,b)=>b.v-a.v).slice(0,8);
+
+  el.innerHTML=`
+    <div class="cx hero anim">
+      <div class="rot">Comissão da quinzena</div>
+      <div class="val">${RS(total)}</div>
+      <div class="per">${periodo} · ${ATUAL.length} ${ATUAL.length===1?'serviço':'serviços'}</div>
+    </div>
+
+    <div class="grade">
+      <div class="mini anim" style="--i:1"><div class="r">De serviços já pagos</div>
+        <div class="v v-verde">${RS(pagos)}</div>
+        <div class="n">${ATUAL.filter(x=>!pendente(x.fp)).length} serviços</div></div>
+      <div class="mini anim" style="--i:2"><div class="r">De serviços pendentes</div>
+        <div class="v v-ambar">${RS(pend)}</div>
+        <div class="n">o cliente ainda não pagou a loja</div></div>
+      <div class="mini anim" style="--i:3"><div class="r">Média por serviço</div>
+        <div class="v v-azul">${RS(total/ATUAL.length)}</div>
+        <div class="n">${ATUAL.length} serviços no período</div></div>
+    </div>
+
+    <div class="cx anim" style="--i:4">
+      <h2>Comissão por dia</h2>
+      <p class="sub">quanto cada dia desta quinzena rendeu, em reais</p>
+      ${barras(porDia,{cor:'var(--c1)'})}
+    </div>
+
+    <div class="cx anim" style="--i:5">
+      <h2>Por tipo de serviço</h2>
+      <p class="sub">onde a comissão foi ganha</p>
+      ${listaBarras(porTipo)}
+    </div>
+
+    <div class="cx anim" style="--i:6">
+      <h2>Clientes que mais renderam</h2>
+      <p class="sub">os ${porCliente.length} primeiros da quinzena</p>
+      ${listaBarras(porCliente)}
+    </div>
+
+    <div class="cx longo anim" style="--i:7">
+      <h2>Todos os serviços da quinzena</h2>
+      <p class="sub">a coluna "pagamento do cliente" é a situação da venda na loja, não da sua comissão</p>
+      ${tabela(ATUAL)}
+    </div>`;
+}
+
+/* =================== TELA 2 — HISTÓRICO =================== */
+let filtroMes='todos';
+
+function telaHistorico(){
+  const el=$('tab-historico');
+  if(!HIST.length){
+    el.innerHTML=`<div class="cx"><div class="vazio">
+      O histórico ainda está vazio.<br><br>
+      No fim de cada quinzena, clique em <b>📋 Copiar para o Histórico</b> lá em cima,
+      cole na aba <b>Histórico</b> da planilha e só depois apague as linhas da aba Totais.<br>
+      Assim o total do ano vai se formando aqui.
+    </div></div>`;
+    return;
+  }
+  const ano=HIST[HIST.length-1].d.getFullYear();
+  const doAno=HIST.filter(x=>x.d.getFullYear()===ano);
+  const total=doAno.reduce((s,x)=>s+x.valor,0);
+  const quinzenas=[...new Set(doAno.map(x=>x.quinzena))];
+  const porMes=Array.from({length:12},(_,m)=>({
+    r:MES[m].slice(0,3),
+    v:doAno.filter(x=>x.d.getMonth()===m).reduce((s,x)=>s+x.valor,0),
+    n:doAno.filter(x=>x.d.getMonth()===m).length
+  }));
+  const comMov=porMes.filter(m=>m.v>0);
+  const melhor=[...comMov].sort((a,b)=>b.v-a.v)[0];
+
+  const porQuinzena=quinzenas.map(q=>{
+    const l=doAno.filter(x=>x.quinzena===q);
+    return {q, n:l.length, v:l.reduce((s,x)=>s+x.valor,0),
+            de:l[0].d, ate:l[l.length-1].d, recebido:l[0].recebido};
+  });
+
+  const lista = filtroMes==='todos' ? doAno : doAno.filter(x=>x.d.getMonth()===+filtroMes);
+
+  el.innerHTML=`
+    <div class="cx hero anim">
+      <div class="rot">Recebido em ${ano}</div>
+      <div class="val">${RS(total)}</div>
+      <div class="per">${doAno.length} serviços · ${quinzenas.length} ${quinzenas.length===1?'quinzena':'quinzenas'} fechadas</div>
+    </div>
+
+    <div class="grade">
+      <div class="mini anim" style="--i:1"><div class="r">Média por quinzena</div>
+        <div class="v v-azul">${RS(total/Math.max(quinzenas.length,1))}</div>
+        <div class="n">sobre ${quinzenas.length} ${quinzenas.length===1?'fechada':'fechadas'}</div></div>
+      <div class="mini anim" style="--i:2"><div class="r">Melhor mês</div>
+        <div class="v v-verde">${melhor?RS(melhor.v):'—'}</div>
+        <div class="n">${melhor?melhor.r:'—'}</div></div>
+      <div class="mini anim" style="--i:3"><div class="r">Média por mês</div>
+        <div class="v v-azul">${RS(total/Math.max(comMov.length,1))}</div>
+        <div class="n">${comMov.length} ${comMov.length===1?'mês com movimento':'meses com movimento'}</div></div>
+    </div>
+
+    <div class="cx anim" style="--i:4">
+      <h2>Comissão por mês em ${ano}</h2>
+      <p class="sub">só entra aqui o que já foi para o histórico</p>
+      ${barras(porMes,{cor:'var(--c3)'})}
+    </div>
+
+    <div class="cx longo anim" style="--i:5">
+      <h2>Quinzena a quinzena</h2>
+      <p class="sub">cada acerto fechado</p>
+      <div class="rolagem"><table>
+        <thead><tr><th>Quinzena</th><th>Período</th><th>Recebido em</th>
+          <th class="num">Serviços</th><th class="num">Minha comissão</th></tr></thead>
+        <tbody>${porQuinzena.map(q=>`<tr>
+          <td class="forte">${esc(q.q)}</td>
+          <td>${diaAno(q.de)} a ${diaAno(q.ate)}</td>
+          <td>${q.recebido?diaAno(q.recebido):'—'}</td>
+          <td class="num">${q.n}</td>
+          <td class="num forte">${RS(q.v)}</td></tr>`).join('')}</tbody>
+        <tfoot><tr><td colspan="3">Total de ${ano}</td>
+          <td class="num">${doAno.length}</td><td class="num">${RS(total)}</td></tr></tfoot>
+      </table></div>
+    </div>
+
+    <div class="cx longo anim" style="--i:6">
+      <h2>Todos os serviços já recebidos</h2>
+      <p class="sub naoimprime">filtre por mês se quiser conferir um período</p>
+      <div class="abas naoimprime" style="padding:0 0 12px">
+        <button class="aba ${filtroMes==='todos'?'on':''}" data-mes="todos">Todos</button>
+        ${comMov.map((m,i)=>{
+          const idx=porMes.indexOf(m);
+          return `<button class="aba ${filtroMes==String(idx)?'on':''}" data-mes="${idx}">${m.r}</button>`;
+        }).join('')}
+      </div>
+      ${tabela(lista,{comQuinzena:true})}
+    </div>`;
+
+  el.querySelectorAll('[data-mes]').forEach(b=>b.onclick=()=>{
+    filtroMes=b.dataset.mes; telaHistorico();
+  });
+}
+
+function desenhar(){
+  telaQuinzena();
+  telaHistorico();
+  const tudo=[...HIST,...ATUAL];
+  $('rodape').innerHTML=
+    `Dados lidos direto de <b>${ARQUIVO}</b>, nesta mesma pasta. Para atualizar o site, é só subir a planilha nova por cima.<br>`+
+    `${ATUAL.length} serviços na quinzena atual · ${HIST.length} no histórico.`;
+}
+
+/* ---------------- abas ---------------- */
+document.querySelectorAll('#abas .aba').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#abas .aba').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on', s.id==='tab-'+b.dataset.tab));
+  const q=b.dataset.tab==='quinzena';
+  $('btCopiar').style.display = q ? '' : 'none';
+});
+
+/* ---------------- botões ---------------- */
+$('btTema').onclick=()=>tema(document.documentElement.getAttribute('data-tema')==='escuro'?'claro':'escuro');
+$('btPdf').onclick=()=>window.print();
+
+/* monta as linhas prontas para colar na aba Histórico */
+$('btCopiar').onclick=()=>{
+  if(!ATUAL.length){ toast('Não há nada na quinzena atual para arquivar.'); return; }
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  const linhas=ATUAL.map(x=>[
+    diaAno(x.d), x.cliente, String(x.valor).replace('.',','), x.obs, x.fp,
+    rotuloQuinzena(x.d), hoje
+  ].join('\t')).join('\n');
+  const ok=()=>toast(ATUAL.length+' linhas copiadas — cole na aba Histórico da planilha.');
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(linhas).then(ok).catch(()=>fallback());
+  } else fallback();
+  function fallback(){
+    const ta=document.createElement('textarea');
+    ta.value=linhas; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); ok(); }
+    catch(e){ toast('Não consegui copiar sozinho — selecione as linhas na planilha mesmo.'); }
+    document.body.removeChild(ta);
+  }
+};
+
+/* ---------------- senha ---------------- */
+function abrir(imediato){
+  const g=$('gate');
+  if(g){ if(imediato) g.remove();
+         else { g.classList.add('sai'); setTimeout(()=>{ if(g.parentNode) g.remove(); },430); } }
+  carregar();
+}
+let jaEntrou=false;
+try{ jaEntrou = localStorage.getItem('cm_ok')==='1'; }catch(e){}
+if(jaEntrou) abrir(true);
+function tentar(){
+  if($('pw').value.trim()===SENHA){ try{localStorage.setItem('cm_ok','1')}catch(e){} abrir(); }
+  else { $('gerr').textContent='Senha incorreta.'; $('pw').value=''; }
+}
+if($('gate')){ $('entrar').onclick=tentar; $('pw').onkeydown=e=>{ if(e.key==='Enter') tentar(); }; }
+</script>
+</body>
+</html>
