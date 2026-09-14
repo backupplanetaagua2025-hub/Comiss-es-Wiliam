@@ -19,7 +19,9 @@
   --ambar:#b7791f; --vermelho:#c0392b; --roxo:#6b4fa0;
   --grade:#dde5ec; --eixo:#8798a6; --tagbg:#eef3f7;
   --shadow:0 1px 2px rgba(16,40,60,.05), 0 6px 18px rgba(16,40,60,.07);
+  --shadowAlta:0 6px 14px rgba(16,40,60,.10), 0 18px 40px rgba(16,40,60,.10);
   --hdA:#0f3d5c; --hdB:#17618c;
+  --pilha:#fff;
   --c1:#2f80c8; --c2:#b5800e; --c3:#12a08d; --c4:#8a63cf; --c5:#d4574a; --c6:#6b7c8c;
 }
 /* ---------- tema escuro ---------- */
@@ -30,7 +32,9 @@ html[data-tema="escuro"]{
   --ambar:#e0a341; --vermelho:#ef6f5e; --roxo:#a78bde;
   --grade:#25384a; --eixo:#7d93a5; --tagbg:#1d2f3d;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+  --shadowAlta:0 6px 14px rgba(0,0,0,.45), 0 18px 40px rgba(0,0,0,.4);
   --hdA:#10222f; --hdB:#173a52;
+  --pilha:#0f1d28;
   --c1:#5aa9e6; --c2:#d9a53a; --c3:#33bda8; --c4:#a98ce0; --c5:#e97f70; --c6:#8b9dab;
   color-scheme:dark;
 }
@@ -57,34 +61,54 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
 .bt:hover{background:rgba(255,255,255,.24)}
 .bt:active{transform:scale(.97)}
 
-/* ---------- abas ---------- */
-.abas{max-width:1080px;margin:0 auto;padding:14px 18px 0;display:flex;gap:8px;flex-wrap:wrap}
-.aba{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;
-  padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s ease}
+/* ---------- barra de abas (pílula que desliza) ---------- */
+.navabas{max-width:1080px;margin:0 auto;padding:16px 18px 0}
+.trilhoAbas{position:relative;display:flex;gap:4px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:5px;box-shadow:var(--shadow);overflow:hidden}
+.pilula{position:absolute;top:5px;bottom:5px;left:0;width:0;border-radius:10px;
+  background:linear-gradient(135deg,var(--hdA),var(--hdB));
+  transition:left .34s cubic-bezier(.55,.1,.25,1.3), width .34s cubic-bezier(.55,.1,.25,1.3);
+  z-index:0}
+html[data-tema="escuro"] .pilula{background:linear-gradient(135deg,#1c4c6b,#2a7ba8)}
+.aba{position:relative;z-index:1;flex:1;border:0;background:none;color:var(--muted);
+  border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:700;cursor:pointer;
+  transition:color .25s ease,transform .12s ease;white-space:nowrap;font-family:inherit}
 .aba:hover{color:var(--ink)}
-.aba.on{background:var(--azul);border-color:var(--azul);color:#fff;box-shadow:var(--shadow)}
-html[data-tema="escuro"] .aba.on{color:#08131c}
+.aba.on{color:#fff}
+.aba:active{transform:scale(.97)}
+.aba .cont{display:inline-block;margin-left:7px;font-size:11px;font-weight:800;
+  background:var(--tagbg);color:var(--muted);border-radius:999px;padding:1px 7px;
+  transition:background .25s ease,color .25s ease}
+.aba.on .cont{background:rgba(255,255,255,.22);color:#fff}
 
 /* ---------- conteúdo ---------- */
 .corpo{max-width:1080px;margin:0 auto;padding:16px 18px 46px}
 .cx{background:var(--card);border:1px solid var(--line);border-radius:16px;
-  box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+  box-shadow:var(--shadow);padding:18px;margin-bottom:14px;
+  transition:transform .22s ease, box-shadow .22s ease}
+.cx:hover{transform:translateY(-2px);box-shadow:var(--shadowAlta)}
 .cx h2{margin:0 0 3px;font-size:15px;font-weight:800}
 .cx .sub{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
 
 .hero{background:linear-gradient(135deg,var(--verde),var(--azulClaro));color:#fff;border:0;
-  text-align:center;padding:26px 18px}
-.hero .rot{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;opacity:.9;font-weight:700}
-.hero .val{font-size:clamp(36px,10vw,52px);font-weight:800;margin:6px 0 2px;letter-spacing:-1px}
-.hero .per{font-size:13px;opacity:.9}
+  text-align:center;padding:26px 18px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(420px 180px at 15% -40%, rgba(255,255,255,.22), transparent 70%)}
+.hero .rot{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;opacity:.9;font-weight:700;position:relative}
+.hero .val{font-size:clamp(36px,10vw,52px);font-weight:800;margin:6px 0 2px;letter-spacing:-1px;
+  font-variant-numeric:tabular-nums;position:relative}
+.hero .per{font-size:13px;opacity:.9;position:relative}
 
 .grade{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));margin-bottom:14px}
 .mini{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;
-  box-shadow:var(--shadow)}
+  box-shadow:var(--shadow);transition:transform .22s ease, box-shadow .22s ease}
+.mini:hover{transform:translateY(-2px);box-shadow:var(--shadowAlta)}
 .mini .r{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
-.mini .v{font-size:23px;font-weight:800;margin-top:5px}
+.mini .v{font-size:23px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums}
+.mini .v .un{font-size:13px;font-weight:700;margin-left:5px;color:var(--muted);letter-spacing:0}
 .mini .n{font-size:11.5px;color:var(--muted);margin-top:3px}
 .v-verde{color:var(--verdeEsc)} .v-ambar{color:var(--ambar)} .v-azul{color:var(--azulClaro)}
+.v-cinza{color:var(--muted)}
 
 /* ---------- tabela ---------- */
 .rolagem{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -94,6 +118,8 @@ th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;c
 td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:nth-child(even){background:var(--card2)}
+tbody tr{transition:background .16s ease}
+tbody tr:hover{background:var(--tagbg)}
 .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .forte{font-weight:700}
 .tag{display:inline-block;padding:2.5px 9px;border-radius:999px;font-size:11.5px;font-weight:700;
@@ -108,8 +134,10 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
 .gr text{font-size:10.5px;fill:var(--eixo)}
 .gr .rotv{font-size:10.5px;font-weight:700;fill:var(--ink)}
 .gr .lin{stroke:var(--grade);stroke-width:1}
-.barra{transition:opacity .18s ease}
+.barra{transition:opacity .18s ease;transform-box:fill-box;transform-origin:bottom;
+  animation:cresce .6s cubic-bezier(.22,.8,.3,1) backwards;animation-delay:calc(var(--b,0)*55ms)}
 .barra:hover{opacity:.78}
+@keyframes cresce{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
 /* ---------- listas simples ---------- */
 .linhas{display:flex;flex-direction:column;gap:9px}
@@ -118,7 +146,19 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
 .li .qt{font-size:11.5px;color:var(--muted);white-space:nowrap}
 .li .vl{font-size:13.5px;font-weight:800;white-space:nowrap;min-width:78px;text-align:right}
 .li .trilho{height:7px;border-radius:999px;background:var(--grade);flex:1.4;overflow:hidden;min-width:60px}
-.li .trilho i{display:block;height:100%;border-radius:999px}
+.li .trilho i{display:block;height:100%;border-radius:999px;
+  animation:estica .7s cubic-bezier(.22,.8,.3,1) backwards;animation-delay:calc(var(--i,0)*45ms + 120ms)}
+@keyframes estica{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}
+
+/* ---------- filtros de mês (chips) ---------- */
+.chips{display:flex;gap:7px;flex-wrap:wrap;padding:0 0 13px}
+.chip{border:1px solid var(--line);background:var(--card2);color:var(--muted);border-radius:999px;
+  padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:all .2s ease}
+.chip:hover{color:var(--ink);border-color:var(--muted)}
+.chip.on{background:var(--azul);border-color:var(--azul);color:#fff}
+html[data-tema="escuro"] .chip.on{color:#08131c}
+.chip:active{transform:scale(.96)}
 
 .vazio{text-align:center;color:var(--muted);font-size:13.5px;padding:26px 10px;line-height:1.6}
 .rodape{max-width:1080px;margin:0 auto;padding:0 18px 40px;font-size:12px;color:var(--muted);line-height:1.6}
@@ -152,7 +192,13 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
 @keyframes some{to{opacity:0;transform:scale(1.04)}}
 @keyframes surge{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .anim{animation:surge .45s cubic-bezier(.22,.8,.3,1) backwards;animation-delay:calc(var(--i,0)*45ms)}
-@media(prefers-reduced-motion:reduce){.anim{animation:none}}
+@media(prefers-reduced-motion:reduce){.anim,.barra,.li .trilho i{animation:none}}
+
+/* ---------- troca de aba ---------- */
+.tab:not(.on){display:none}
+.tab.entrando{animation:entraPainel .4s cubic-bezier(.22,.8,.3,1)}
+@keyframes entraPainel{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.tab.entrando{animation:none}}
 
 /* ---------- aviso flutuante ---------- */
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);
@@ -167,9 +213,10 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
   .topo h1{font-size:18px}
   .acoes{margin-left:0;width:100%}
   .bt{flex:1;text-align:center;padding:10px 8px;font-size:12.5px}
-  .abas,.corpo,.rodape{padding-left:14px;padding-right:14px}
+  .navabas,.corpo,.rodape{padding-left:14px;padding-right:14px}
   .cx{padding:15px;border-radius:14px}
-  .aba{flex:1;text-align:center;padding:10px 8px;font-size:13px}
+  .aba{padding:10px 6px;font-size:12.5px}
+  .aba .cont{margin-left:5px;padding:1px 5px;font-size:10px}
   table{font-size:12.5px;min-width:470px}
   th,td{padding:8px 7px}
 }
@@ -180,20 +227,24 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
   @page{size:A4 portrait;margin:13mm 12mm}
   html,body{background:#fff !important;color:#000 !important}
   body::before{display:none}
-  .topo,.abas,.acoes,.rodape,#gate,#toast,.naoimprime{display:none !important}
+  .topo,.navabas,.acoes,.rodape,#gate,#toast,.naoimprime{display:none !important}
   .soimpressao{display:block}
   .corpo{padding:0;max-width:none}
   /* sem animação na impressão — senão os cartões saem apagados ou em branco */
-  .anim{animation:none !important;opacity:1 !important;transform:none !important}
+  .anim,.tab.entrando,.barra,.li .trilho i{animation:none !important;opacity:1 !important;transform:none !important}
+  .cx:hover,.mini:hover{transform:none;box-shadow:none}
   .cx{border:1px solid #ccc;box-shadow:none;page-break-inside:avoid;margin-bottom:10px;padding:12px}
   .cx.longo{page-break-inside:auto}
   thead{display:table-header-group}
   tfoot{display:table-row-group}   /* não repetir o total em toda página */
   tr{page-break-inside:avoid}
+  tbody tr:hover{background:none}
   .hero{background:none !important;color:#000 !important;border:2px solid #000;padding:16px}
+  .hero::after{display:none}
   .hero .val{color:#000}
   .mini{border:1px solid #ccc;box-shadow:none}
-  .v-verde,.v-ambar,.v-azul{color:#000 !important}
+  .v-verde,.v-ambar,.v-azul,.v-cinza{color:#000 !important}
+  .mini .v .un{color:#000 !important}
   .rolagem{overflow:visible}
   table{min-width:0;font-size:10.5pt}
   th{color:#000;border-bottom:1.5px solid #000}
@@ -204,9 +255,12 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
   .impr-cab{border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}
   .impr-cab h1{margin:0;font-size:16pt}
   .impr-cab p{margin:3px 0 0;font-size:9.5pt;color:#444}
-  .tab:not(.on){display:none !important}
+  /* no PDF sai TUDO, não só a aba aberta na tela */
+  .tab{display:block !important;page-break-before:always}
+  .tab:first-of-type{page-break-before:auto}
+  .tituloImpr{display:block !important;font-size:13pt;font-weight:800;margin:0 0 10px}
 }
-.tab:not(.on){display:none}
+.tituloImpr{display:none}
 </style>
 </head>
 <body>
@@ -237,9 +291,13 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
   </div>
 </header>
 
-<nav class="abas" id="abas" hidden>
-  <button class="aba on" data-tab="quinzena">Quinzena atual</button>
-  <button class="aba" data-tab="historico">Histórico</button>
+<nav class="navabas" id="abas" hidden>
+  <div class="trilhoAbas">
+    <span class="pilula" id="pilula"></span>
+    <button class="aba on" data-tab="quinzena">Quinzena atual</button>
+    <button class="aba" data-tab="servicos">Serviços <span class="cont" id="contServ">0</span></button>
+    <button class="aba" data-tab="historico">Histórico <span class="cont" id="contHist">0</span></button>
+  </div>
 </nav>
 
 <div id="carregando">carregando a planilha…</div>
@@ -252,6 +310,7 @@ tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:11px}
   </div>
 
   <section class="tab on" id="tab-quinzena"></section>
+  <section class="tab" id="tab-servicos"></section>
   <section class="tab" id="tab-historico"></section>
 </main>
 
@@ -303,6 +362,8 @@ const dia = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'
 const diaAno = d => d ? d.toLocaleDateString('pt-BR') : '';
 const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const plural = (n,s,p) => n===1 ? s : p;
+const semAnim = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function toast(msg){
   const t=$('toast'); t.textContent=msg; t.classList.add('ver');
@@ -447,6 +508,24 @@ function processar(buf){
   desenhar();
 }
 
+/* ---------------- números que sobem sozinhos ---------------- */
+function contar(el){
+  const alvo=parseFloat(el.dataset.ate||'0');
+  const moeda=el.dataset.moeda==='1';
+  const fim=v => moeda ? RS(v) : String(Math.round(v));
+  if(semAnim()){ el.textContent=fim(alvo); return; }
+  const dur=700, t0=performance.now();
+  function passo(t){
+    const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);
+    el.textContent=fim(alvo*e);
+    if(p<1) requestAnimationFrame(passo); else el.textContent=fim(alvo);
+  }
+  requestAnimationFrame(passo);
+}
+function animarNumeros(raiz){
+  (raiz||document).querySelectorAll('[data-ate]').forEach(contar);
+}
+
 /* ---------------- gráfico de barras (SVG puro) ---------------- */
 function barras(itens,{cor='var(--c1)',altura=170}={}){
   if(!itens.length) return '<div class="vazio">nada para mostrar ainda</div>';
@@ -462,7 +541,7 @@ function barras(itens,{cor='var(--c1)',altura=170}={}){
   }
   itens.forEach((it,i)=>{
     const h=escala(it.v), x=L+passo*i+(passo-bl)/2, y=alt-B-h;
-    g+=`<rect class="barra" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bl.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="4" style="fill:${cor}"><title>${esc(it.r)}: ${RS(it.v)}</title></rect>`;
+    g+=`<rect class="barra" style="--b:${i};fill:${cor}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bl.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="4"><title>${esc(it.r)}: ${RS(it.v)}</title></rect>`;
     if(it.v) g+=`<text class="rotv" x="${(x+bl/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle">${Math.round(it.v)}</text>`;
     g+=`<text x="${(x+bl/2).toFixed(1)}" y="${alt-B+15}" text-anchor="middle">${esc(it.r)}</text>`;
   });
@@ -477,8 +556,8 @@ function listaBarras(itens){
   return '<div class="linhas">'+itens.map((it,i)=>`
     <div class="li anim" style="--i:${i}">
       <span class="nome">${esc(it.r)}</span>
-      <span class="qt">${it.n} ${it.n===1?'serviço':'serviços'}</span>
-      <span class="trilho"><i style="width:${(it.v/max*100).toFixed(1)}%;background:${cores[i%cores.length]}"></i></span>
+      <span class="qt">${it.n} ${plural(it.n,'serviço','serviços')}</span>
+      <span class="trilho"><i style="--i:${i};width:${(it.v/max*100).toFixed(1)}%;background:${cores[i%cores.length]}"></i></span>
       <span class="vl">${RS(it.v)}</span>
     </div>`).join('')+'</div>';
 }
@@ -494,7 +573,10 @@ function agrupar(arr, chave){
   return [...m.values()];
 }
 
-/* ---------------- tabela de lançamentos ---------------- */
+/* ---------------- tabela de lançamentos ----------------
+   Aqui os valores e a forma de pagamento continuam normais,
+   serviço por serviço. O resumo em cartões é que fala em
+   QUANTIDADE quando o assunto é pendência.                */
 function tabela(arr,{comQuinzena=false}={}){
   if(!arr.length) return '<div class="vazio">nenhum lançamento</div>';
   const tot=arr.reduce((s,x)=>s+x.valor,0);
@@ -513,7 +595,7 @@ function tabela(arr,{comQuinzena=false}={}){
       <td class="num forte">${RS(x.valor)}</td>
     </tr>`).join('')}</tbody>
     <tfoot><tr>
-      <td colspan="${comQuinzena?5:4}">${arr.length} ${arr.length===1?'serviço':'serviços'}</td>
+      <td colspan="${comQuinzena?5:4}">${arr.length} ${plural(arr.length,'serviço','serviços')}</td>
       <td class="num">${RS(tot)}</td>
     </tr></tfoot>
   </table></div>`;
@@ -523,7 +605,8 @@ function tabela(arr,{comQuinzena=false}={}){
 function telaQuinzena(){
   const el=$('tab-quinzena');
   if(!ATUAL.length){
-    el.innerHTML=`<div class="cx"><div class="vazio">
+    el.innerHTML=`<div class="tituloImpr">Quinzena atual</div>
+      <div class="cx"><div class="vazio">
       A aba <b>Totais</b> da planilha está vazia.<br>
       Ou a quinzena acabou de ser fechada, ou ainda não houve serviço neste período.
     </div></div>`;
@@ -531,8 +614,8 @@ function telaQuinzena(){
     return;
   }
   const total=ATUAL.reduce((s,x)=>s+x.valor,0);
-  const pagos=ATUAL.filter(x=>!pendente(x.fp)).reduce((s,x)=>s+x.valor,0);
-  const pend=total-pagos;
+  const nPagos=ATUAL.filter(x=>!pendente(x.fp)).length;
+  const nPend=ATUAL.length-nPagos;
   const de=ATUAL[0].d, ate=ATUAL[ATUAL.length-1].d;
   const periodo=`${diaAno(de)} a ${diaAno(ate)}`;
 
@@ -547,22 +630,24 @@ function telaQuinzena(){
   const porCliente=agrupar(ATUAL,x=>x.cliente||'—').sort((a,b)=>b.v-a.v).slice(0,8);
 
   el.innerHTML=`
+    <div class="tituloImpr">Quinzena atual</div>
+
     <div class="cx hero anim">
       <div class="rot">Comissão da quinzena</div>
-      <div class="val">${RS(total)}</div>
-      <div class="per">${periodo} · ${ATUAL.length} ${ATUAL.length===1?'serviço':'serviços'}</div>
+      <div class="val" data-ate="${total}" data-moeda="1">${RS(total)}</div>
+      <div class="per">${periodo} · ${ATUAL.length} ${plural(ATUAL.length,'serviço','serviços')}</div>
     </div>
 
     <div class="grade">
-      <div class="mini anim" style="--i:1"><div class="r">De serviços já pagos</div>
-        <div class="v v-verde">${RS(pagos)}</div>
-        <div class="n">${ATUAL.filter(x=>!pendente(x.fp)).length} serviços</div></div>
-      <div class="mini anim" style="--i:2"><div class="r">De serviços pendentes</div>
-        <div class="v v-ambar">${RS(pend)}</div>
+      <div class="mini anim" style="--i:1"><div class="r">Serviços já pagos pelo cliente</div>
+        <div class="v v-verde"><span data-ate="${nPagos}">${nPagos}</span><span class="un">${plural(nPagos,'serviço','serviços')}</span></div>
+        <div class="n">de ${ATUAL.length} na quinzena</div></div>
+      <div class="mini anim" style="--i:2"><div class="r">Serviços ainda não pagos</div>
+        <div class="v ${nPend?'v-ambar':'v-cinza'}"><span data-ate="${nPend}">${nPend}</span><span class="un">${plural(nPend,'serviço','serviços')}</span></div>
         <div class="n">o cliente ainda não pagou a loja</div></div>
       <div class="mini anim" style="--i:3"><div class="r">Média por serviço</div>
-        <div class="v v-azul">${RS(total/ATUAL.length)}</div>
-        <div class="n">${ATUAL.length} serviços no período</div></div>
+        <div class="v v-azul" data-ate="${total/ATUAL.length}" data-moeda="1">${RS(total/ATUAL.length)}</div>
+        <div class="n">${ATUAL.length} ${plural(ATUAL.length,'serviço no período','serviços no período')}</div></div>
     </div>
 
     <div class="cx anim" style="--i:4">
@@ -581,22 +666,52 @@ function telaQuinzena(){
       <h2>Clientes que mais renderam</h2>
       <p class="sub">os ${porCliente.length} primeiros da quinzena</p>
       ${listaBarras(porCliente)}
-    </div>
-
-    <div class="cx longo anim" style="--i:7">
-      <h2>Todos os serviços da quinzena</h2>
-      <p class="sub">a coluna "pagamento do cliente" é a situação da venda na loja, não da sua comissão</p>
-      ${tabela(ATUAL)}
     </div>`;
 }
 
-/* =================== TELA 2 — HISTÓRICO =================== */
+/* =================== TELA 2 — SERVIÇOS DA QUINZENA =================== */
+let filtroSit='todos';
+
+function telaServicos(){
+  const el=$('tab-servicos');
+  if(!ATUAL.length){
+    el.innerHTML=`<div class="tituloImpr">Serviços da quinzena</div>
+      <div class="cx"><div class="vazio">Nenhum serviço lançado na quinzena atual.</div></div>`;
+    return;
+  }
+  const nPend=ATUAL.filter(x=>pendente(x.fp)).length;
+  const nPagos=ATUAL.length-nPend;
+  const lista = filtroSit==='pendentes' ? ATUAL.filter(x=>pendente(x.fp))
+              : filtroSit==='pagos'     ? ATUAL.filter(x=>!pendente(x.fp))
+              : ATUAL;
+
+  el.innerHTML=`
+    <div class="tituloImpr">Serviços da quinzena</div>
+    <div class="cx longo anim">
+      <h2>Todos os serviços da quinzena</h2>
+      <p class="sub">a coluna "pagamento do cliente" é a situação da venda na loja, não da sua comissão —
+        a comissão é por serviço feito</p>
+      <div class="chips naoimprime">
+        <button class="chip ${filtroSit==='todos'?'on':''}" data-sit="todos">Todos (${ATUAL.length})</button>
+        <button class="chip ${filtroSit==='pagos'?'on':''}" data-sit="pagos">Já pagos (${nPagos})</button>
+        <button class="chip ${filtroSit==='pendentes'?'on':''}" data-sit="pendentes">Ainda não pagos (${nPend})</button>
+      </div>
+      ${tabela(lista)}
+    </div>`;
+
+  el.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>{
+    filtroSit=b.dataset.sit; telaServicos(); animarNumeros(el);
+  });
+}
+
+/* =================== TELA 3 — HISTÓRICO =================== */
 let filtroMes='todos';
 
 function telaHistorico(){
   const el=$('tab-historico');
   if(!HIST.length){
-    el.innerHTML=`<div class="cx"><div class="vazio">
+    el.innerHTML=`<div class="tituloImpr">Histórico</div>
+      <div class="cx"><div class="vazio">
       O histórico ainda está vazio.<br><br>
       No fim de cada quinzena, clique em <b>📋 Copiar para o Histórico</b> lá em cima,
       cole na aba <b>Histórico</b> da planilha e só depois apague as linhas da aba Totais.<br>
@@ -625,22 +740,24 @@ function telaHistorico(){
   const lista = filtroMes==='todos' ? doAno : doAno.filter(x=>x.d.getMonth()===+filtroMes);
 
   el.innerHTML=`
+    <div class="tituloImpr">Histórico de ${ano}</div>
+
     <div class="cx hero anim">
       <div class="rot">Recebido em ${ano}</div>
-      <div class="val">${RS(total)}</div>
-      <div class="per">${doAno.length} serviços · ${quinzenas.length} ${quinzenas.length===1?'quinzena':'quinzenas'} fechadas</div>
+      <div class="val" data-ate="${total}" data-moeda="1">${RS(total)}</div>
+      <div class="per">${doAno.length} serviços · ${quinzenas.length} ${plural(quinzenas.length,'quinzena fechada','quinzenas fechadas')}</div>
     </div>
 
     <div class="grade">
       <div class="mini anim" style="--i:1"><div class="r">Média por quinzena</div>
-        <div class="v v-azul">${RS(total/Math.max(quinzenas.length,1))}</div>
-        <div class="n">sobre ${quinzenas.length} ${quinzenas.length===1?'fechada':'fechadas'}</div></div>
+        <div class="v v-azul" data-ate="${total/Math.max(quinzenas.length,1)}" data-moeda="1">${RS(total/Math.max(quinzenas.length,1))}</div>
+        <div class="n">sobre ${quinzenas.length} ${plural(quinzenas.length,'fechada','fechadas')}</div></div>
       <div class="mini anim" style="--i:2"><div class="r">Melhor mês</div>
-        <div class="v v-verde">${melhor?RS(melhor.v):'—'}</div>
+        <div class="v v-verde" ${melhor?`data-ate="${melhor.v}" data-moeda="1"`:''}>${melhor?RS(melhor.v):'—'}</div>
         <div class="n">${melhor?melhor.r:'—'}</div></div>
       <div class="mini anim" style="--i:3"><div class="r">Média por mês</div>
-        <div class="v v-azul">${RS(total/Math.max(comMov.length,1))}</div>
-        <div class="n">${comMov.length} ${comMov.length===1?'mês com movimento':'meses com movimento'}</div></div>
+        <div class="v v-azul" data-ate="${total/Math.max(comMov.length,1)}" data-moeda="1">${RS(total/Math.max(comMov.length,1))}</div>
+        <div class="n">${comMov.length} ${plural(comMov.length,'mês com movimento','meses com movimento')}</div></div>
     </div>
 
     <div class="cx anim" style="--i:4">
@@ -669,37 +786,59 @@ function telaHistorico(){
     <div class="cx longo anim" style="--i:6">
       <h2>Todos os serviços já recebidos</h2>
       <p class="sub naoimprime">filtre por mês se quiser conferir um período</p>
-      <div class="abas naoimprime" style="padding:0 0 12px">
-        <button class="aba ${filtroMes==='todos'?'on':''}" data-mes="todos">Todos</button>
-        ${comMov.map((m,i)=>{
+      <div class="chips naoimprime">
+        <button class="chip ${filtroMes==='todos'?'on':''}" data-mes="todos">Todos</button>
+        ${comMov.map(m=>{
           const idx=porMes.indexOf(m);
-          return `<button class="aba ${filtroMes==String(idx)?'on':''}" data-mes="${idx}">${m.r}</button>`;
+          return `<button class="chip ${filtroMes==String(idx)?'on':''}" data-mes="${idx}">${m.r}</button>`;
         }).join('')}
       </div>
       ${tabela(lista,{comQuinzena:true})}
     </div>`;
 
   el.querySelectorAll('[data-mes]').forEach(b=>b.onclick=()=>{
-    filtroMes=b.dataset.mes; telaHistorico();
+    filtroMes=b.dataset.mes; telaHistorico(); animarNumeros(el);
   });
 }
 
 function desenhar(){
   telaQuinzena();
+  telaServicos();
   telaHistorico();
-  const tudo=[...HIST,...ATUAL];
+  $('contServ').textContent=ATUAL.length;
+  $('contHist').textContent=HIST.length;
   $('rodape').innerHTML=
     `Dados lidos direto de <b>${ARQUIVO}</b>, nesta mesma pasta. Para atualizar o site, é só subir a planilha nova por cima.<br>`+
     `${ATUAL.length} serviços na quinzena atual · ${HIST.length} no histórico.`;
+  moverPilula();
+  animarNumeros($('tab-quinzena'));
 }
 
 /* ---------------- abas ---------------- */
-document.querySelectorAll('#abas .aba').forEach(b=>b.onclick=()=>{
+function moverPilula(){
+  const ativa=document.querySelector('#abas .aba.on'); const p=$('pilula');
+  if(!ativa||!p) return;
+  p.style.left = ativa.offsetLeft+'px';
+  p.style.width = ativa.offsetWidth+'px';
+}
+function irParaAba(b){
   document.querySelectorAll('#abas .aba').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on', s.id==='tab-'+b.dataset.tab));
-  const q=b.dataset.tab==='quinzena';
-  $('btCopiar').style.display = q ? '' : 'none';
-});
+  moverPilula();
+  document.querySelectorAll('.tab').forEach(s=>{
+    const liga = s.id==='tab-'+b.dataset.tab;
+    s.classList.toggle('on', liga);
+    s.classList.remove('entrando');
+    if(liga){
+      void s.offsetWidth;                 /* reinicia a animação de entrada */
+      s.classList.add('entrando');
+      animarNumeros(s);
+    }
+  });
+  $('btCopiar').style.display = b.dataset.tab==='historico' ? 'none' : '';
+  try{ localStorage.setItem('cm_aba', b.dataset.tab); }catch(e){}
+}
+document.querySelectorAll('#abas .aba').forEach(b=>b.onclick=()=>irParaAba(b));
+addEventListener('resize', moverPilula);
 
 /* ---------------- botões ---------------- */
 $('btTema').onclick=()=>tema(document.documentElement.getAttribute('data-tema')==='escuro'?'claro':'escuro');
