@@ -255,11 +255,27 @@ html[data-tema="escuro"] .chip.on{color:#08131c}
   .impr-cab{border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}
   .impr-cab h1{margin:0;font-size:16pt}
   .impr-cab p{margin:3px 0 0;font-size:9.5pt;color:#444}
-  /* no PDF sai TUDO, não só a aba aberta na tela */
-  .tab{display:block !important;page-break-before:always}
-  .tab:first-of-type{page-break-before:auto}
-  .tituloImpr{display:block !important;font-size:13pt;font-weight:800;margin:0 0 10px}
+  /* PDF = só o relatório de serviços + total (uma página, para mandar à chefe) */
+  .tab,.impr-cab,#carregando{display:none !important}
+  #relChefe{display:block !important}
 }
+/* ---------- relatório de 1 página (só aparece no PDF) ---------- */
+#relChefe{display:none;font-family:Arial,Helvetica,sans-serif;color:#000}
+#relChefe .rc-cab{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px}
+#relChefe h1{margin:0;font-size:15pt}
+#relChefe .rc-sub{margin:2px 0 0;font-size:9.5pt;color:#333}
+#relChefe .rc-emit{font-size:8.5pt;color:#444;text-align:right}
+#relChefe table{width:100%;min-width:0;border-collapse:collapse;font-size:9.5pt}
+#relChefe th{text-align:left;border-bottom:1.5px solid #000;padding:4px 5px;font-size:8.5pt;text-transform:uppercase;letter-spacing:.3px;color:#000}
+#relChefe td{padding:3px 5px;border-bottom:1px solid #ddd}
+#relChefe .n{text-align:right;white-space:nowrap}
+#relChefe tbody tr:nth-child(even){background:#f2f2f2 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#relChefe tfoot td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:11pt;padding-top:6px}
+#relChefe tr{page-break-inside:avoid}
+#relChefe thead{display:table-header-group}
+#relChefe tfoot{display:table-row-group}
+#relChefe.compacto table{font-size:8pt} #relChefe.compacto td{padding:1.5px 4px}
+#relChefe.mini table{font-size:7pt}     #relChefe.mini td{padding:1px 4px}
 .tituloImpr{display:none}
 </style>
 </head>
@@ -308,6 +324,9 @@ html[data-tema="escuro"] .chip.on{color:#08131c}
     <h1>Minhas Comissões — Planeta Água</h1>
     <p id="imprSub"></p>
   </div>
+
+  <!-- relatório de uma página para a chefe (só no PDF) -->
+  <div id="relChefe"></div>
 
   <section class="tab on" id="tab-quinzena"></section>
   <section class="tab" id="tab-servicos"></section>
@@ -801,7 +820,31 @@ function telaHistorico(){
   });
 }
 
+/* =================== PDF — 1 página, só serviços + total =================== */
+function relatorioChefe(){
+  const el=$('relChefe');
+  if(!ATUAL.length){ el.innerHTML='<p>Nenhum serviço lançado na quinzena atual.</p>'; return; }
+  const total=ATUAL.reduce((s,x)=>s+x.valor,0);
+  const periodo=`${diaAno(ATUAL[0].d)} a ${diaAno(ATUAL[ATUAL.length-1].d)}`;
+  el.className = ATUAL.length>60 ? 'mini' : ATUAL.length>40 ? 'compacto' : '';
+  el.innerHTML=`
+    <div class="rc-cab">
+      <div><h1>Comissões — Serviços da Quinzena</h1>
+        <p class="rc-sub">Planeta Água · ${periodo}</p></div>
+      <div class="rc-emit">emitido em ${new Date().toLocaleDateString('pt-BR')}</div>
+    </div>
+    <table>
+      <thead><tr><th>Data</th><th>Cliente</th><th>Serviço</th><th class="n">Comissão</th></tr></thead>
+      <tbody>${ATUAL.map(x=>`<tr>
+        <td>${diaAno(x.d)}</td><td>${esc(x.cliente)}</td><td>${esc(x.obs||'—')}</td>
+        <td class="n">${RS(x.valor)}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td colspan="3">TOTAL — ${ATUAL.length} ${plural(ATUAL.length,'serviço','serviços')}</td>
+        <td class="n">${RS(total)}</td></tr></tfoot>
+    </table>`;
+}
+
 function desenhar(){
+  relatorioChefe();
   telaQuinzena();
   telaServicos();
   telaHistorico();
@@ -842,7 +885,14 @@ addEventListener('resize', moverPilula);
 
 /* ---------------- botões ---------------- */
 $('btTema').onclick=()=>tema(document.documentElement.getAttribute('data-tema')==='escuro'?'claro':'escuro');
-$('btPdf').onclick=()=>window.print();
+$('btPdf').onclick=()=>{
+  relatorioChefe();
+  /* nome sugerido do arquivo ao salvar o PDF */
+  const tit=document.title, h=new Date();
+  document.title='Comissoes_Quinzena_'+String(h.getDate()).padStart(2,'0')+'-'+String(h.getMonth()+1).padStart(2,'0')+'-'+h.getFullYear();
+  window.print();
+  setTimeout(()=>{ document.title=tit; },800);
+};
 
 /* monta as linhas prontas para colar na aba Histórico */
 $('btCopiar').onclick=()=>{
