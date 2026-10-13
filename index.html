@@ -404,6 +404,7 @@ function tipoServico(obs){
   if(/instala/.test(o)) return 'Instalação';
   if(/limpeza/.test(o)) return 'Limpeza';
   if(/bot[aã]o|bot[oõ]es|pe[cç]a|torneira|mangueira|registro|reparo|conserto|troca de/.test(o)) return 'Peça / reparo';
+  if(/venda/.test(o)) return 'Venda de pré-filtro';
   if(/refil|filtro|vela/.test(o)) return 'Refil';
   return obs ? obs.trim() : 'Outros';
 }
@@ -630,7 +631,7 @@ function graficoDias(P){
   const dias=diasDoPeriodo(P);
   const soma=d=>P.lista.filter(x=>x.d.getTime()===d.getTime()).reduce((s,x)=>s+x.valor,0);
   const vals=dias.map(soma), max=Math.max(...vals,1);
-  const W = innerWidth<620 ? Math.max(320, dias.length*34) : Math.max(560, dias.length*44), H=150, T=18, B=26;
+  const W = innerWidth<620 ? Math.max(320, dias.length*34) : Math.max(560, dias.length*44), H=Math.max(150, Math.round(W*0.27)), T=18, B=26;
   const passo=W/dias.length, bl=Math.min(26,passo*.62);
   let g=`<line x1="0" x2="${W}" y1="${H-B}" y2="${H-B}" stroke="var(--line)"/>`;
   dias.forEach((d,i)=>{
@@ -663,14 +664,14 @@ function telaQuinzena(){
   const total=L.reduce((s,x)=>s+x.valor,0);
   const de=L[0].d, ate=L[L.length-1].d;
   const periodo=`${dia(de)} a ${diaAno(ate)}`;
-  const nPend=L.filter(x=>pendente(x.fp)).length, nPagos=L.length-nPend;
+  const nPend=L.filter(x=>pendente(x.fp)).length, nSem=L.filter(x=>!x.fp).length, nPagos=L.length-nPend-nSem;
   if(P.atual) $('subtopo').textContent=`quinzena atual · ${diaAno(de)} a ${diaAno(ate)}`;
   else if(!ATUAL.length) $('subtopo').textContent='a quinzena atual ainda não tem serviço lançado';
 
   const G=graficoDias(P);
   const noDia = diaFiltro ? L.filter(x=>x.d.getTime()===diaFiltro.getTime()) : L;
   const lista = filtroSit==='pendentes' ? noDia.filter(x=>pendente(x.fp))
-              : filtroSit==='pagos'     ? noDia.filter(x=>!pendente(x.fp)) : noDia;
+              : filtroSit==='pagos'     ? noDia.filter(x=>x.fp&&!pendente(x.fp)) : noDia;
   const totDia = noDia.reduce((s,x)=>s+x.valor,0);
 
   /* extrato agrupado por dia (mais recente primeiro) */
@@ -681,7 +682,7 @@ function telaQuinzena(){
       return `<div class="dia-g"><div class="dh"><span>${dia(d)} · ${SEMANA[d.getDay()]}</span><span class="num">${RS(l.reduce((s,x)=>s+x.valor,0))}</span></div>
         ${l.map(x=>`<div class="srv"><div class="m"><div class="n">${esc(x.cliente||'—')}</div>
           <div class="o">${esc(x.obs||'—')}</div>
-          <span class="tag ${pendente(x.fp)?'pend':''}">${pendente(x.fp)?'cliente ainda não pagou':'cliente pagou · '+esc(x.fp||'—')}</span></div>
+          <span class="tag ${pendente(x.fp)?'pend':''}">${!x.fp?'pagamento do cliente não registrado':pendente(x.fp)?'cliente ainda não pagou':'cliente pagou · '+esc(x.fp)}</span></div>
           <div class="vl num">${RS(x.valor)}</div></div>`).join('')}</div>`; }).join('')
     : '<div class="vazio">Nenhum serviço com esse filtro.</div>';
 
@@ -701,7 +702,7 @@ function telaQuinzena(){
           <div class="valor">
             <div class="r">${P.atual?'Minha comissão até agora':'Minha comissão nesta quinzena'}</div>
             <div class="v num" data-ate="${total}" data-moeda="1">${RS(total)}</div>
-            <div class="d">${L.length} ${plural(L.length,'serviço','serviços')}</div>
+            <div class="d">${L.length} ${plural(L.length,'serviço','serviços')}${nSem?' · relatório antigo, sem a forma de pagamento':''}</div>
           </div>
         </div>
         <div class="graf">${G.html}</div>
@@ -718,7 +719,7 @@ function telaQuinzena(){
         <div class="ext-cab"><h2>${diaFiltro?'Serviços do dia '+dia(diaFiltro):'Serviços da quinzena'}</h2><span class="sub" style="margin:0">a comissão é por serviço feito</span></div>
         <div class="chips">
           <button class="chip ${filtroSit==='todos'?'on':''}" data-sit="todos">Todos (${noDia.length})</button>
-          <button class="chip ${filtroSit==='pagos'?'on':''}" data-sit="pagos">Cliente já pagou (${noDia.length-noDia.filter(x=>pendente(x.fp)).length})</button>
+          <button class="chip ${filtroSit==='pagos'?'on':''}" data-sit="pagos">Cliente já pagou (${noDia.filter(x=>x.fp&&!pendente(x.fp)).length})</button>
           <button class="chip ${filtroSit==='pendentes'?'on':''}" data-sit="pendentes">Cliente ainda não pagou (${noDia.filter(x=>pendente(x.fp)).length})</button>
         </div>
         ${extrato}
